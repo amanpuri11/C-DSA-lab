@@ -1,0 +1,62 @@
+#include <stdio.h>
+#include <stdlib.h>
+struct Node{
+    struct Node *left;
+    int data;
+    struct Node *right;
+};
+struct Node* createNode(){
+    struct Node *temp = (struct Node*)malloc(sizeof(struct Node));
+    printf("Enter tree element: ");
+    scanf("%d",&temp->data);
+    temp->left=temp->right=NULL;
+    return temp;
+}
+
+void insertInLeft(struct Node *parent){
+    parent->left=createNode();
+}
+void insertInRight(struct Node *parent){
+    parent->right=createNode();
+}
+
+struct Node* preorder(struct Node *root){
+    if(root != NULL){
+        printf("%d ",root->data);
+        preorder(root->left);
+        preorder(root->right);
+    }
+}
+struct Node* inorder(struct Node *root){
+    if(root != NULL){
+        inorder(root->left);
+        printf("%d ",root->data);
+        inorder(root->right);
+    }
+}
+struct Node* postorder(struct Node *root){
+    if(root != NULL){
+        postorder(root->left);
+        postorder(root->right);
+        printf("%d ",root->data);
+    }
+}
+
+int main(){
+    struct Node *root = createNode();   //19
+    insertInRight(root);    //72
+    insertInLeft(root->right);   //12
+    insertInLeft(root);   //52
+    insertInLeft(root->right->left);   //32
+    insertInRight(root->right->left->left);    //5
+
+    printf("\n*** preorder form***\n");
+    preorder(root);
+   
+    printf("\n*** Indorder form***\n");
+    inorder(root);
+    
+    printf("\n*** Postorder form***\n");
+    postorder(root);
+    return 0;
+}
