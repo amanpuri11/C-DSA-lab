@@ -1,0 +1,111 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Define a structure for a node in the linked list
+struct Node {
+    int data;
+    int priority;
+    struct Node* next;
+};
+
+// Function to create a new node
+struct Node* newNode(int data, int priority) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    newNode->data = data;
+    newNode->priority = priority;
+    newNode->next = NULL;
+    return newNode;
+}
+
+// Structure for the priority queue
+struct PriorityQueue {
+    struct Node* front;
+};
+
+// Function to create an empty priority queue
+struct PriorityQueue* createPriorityQueue() {
+    struct PriorityQueue* pq = (struct PriorityQueue*)malloc(sizeof(struct PriorityQueue));
+    pq->front = NULL;
+    return pq;
+}
+
+// Function to enqueue an element into the priority queue
+void enqueue(struct PriorityQueue* pq, int data, int priority) {
+    struct Node* newNodePtr = newNode(data, priority);
+    if (pq->front == NULL || priority < pq->front->priority) {
+        newNodePtr->next = pq->front;
+        pq->front = newNodePtr;
+    } else {
+        struct Node* temp = pq->front;
+        while (temp->next != NULL && temp->next->priority <= priority) {
+            temp = temp->next;
+        }
+        newNodePtr->next = temp->next;
+        temp->next = newNodePtr;
+    }
+}
+
+// Function to dequeue an element from the priority queue
+int dequeue(struct PriorityQueue* pq) {
+    if (pq->front == NULL) {
+        printf("Priority Queue is empty\n");
+        return -1;
+    }
+    int dequeued = pq->front->data;
+    struct Node* temp = pq->front;
+    pq->front = pq->front->next;
+    free(temp);
+    return dequeued;
+}
+
+// Function to display the priority queue
+void display(struct PriorityQueue* pq) {
+    if (pq->front == NULL) {
+        printf("Priority Queue is empty\n");
+        return;
+    }
+    printf("Priority Queue: ");
+    struct Node* temp = pq->front;
+    while (temp != NULL) {
+        printf("(%d, %d) ", temp->data, temp->priority);
+        temp = temp->next;
+    }
+    printf("\n");
+}
+
+int main() {
+    struct PriorityQueue* pq = createPriorityQueue();
+    int choice, data, priority;
+
+    while (1) {
+        printf("\nPriority Queue Operations\n");
+        printf("1. Enqueue\n");
+        printf("2. Dequeue\n");
+        printf("3. Display\n");
+        printf("4. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                printf("Enter data to enqueue: ");
+                scanf("%d", &data);
+                printf("Enter priority: ");
+                scanf("%d", &priority);
+                enqueue(pq, data, priority);
+                break;
+            case 2:
+                printf("Dequeued element: %d\n", dequeue(pq));
+                break;
+            case 3:
+                display(pq);
+                break;
+            case 4:
+                printf("Exiting...\n");
+                exit(0);
+            default:
+                printf("Invalid choice, please enter a valid option.\n");
+        }
+    }
+    return 0;
+}
